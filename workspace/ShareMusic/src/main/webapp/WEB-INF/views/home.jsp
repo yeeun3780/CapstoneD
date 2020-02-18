@@ -1,15 +1,28 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page session="false" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <html>
 <head>
-	<title>Home</title>
+<title>Home</title>
 </head>
 <body>
-<h1>
-	Hello world!  
-</h1>
-	<c:forEach var="listarray" items="${li}">
-		<p><c:out value="${listarray}"> </c:out>
-	</c:forEach> 
+<form method="post" action="upload" enctype="multipart/form-data">
+
+         <label>email:</label>
+
+         <input type="text" name="email">
+
+         <br><br>
+
+
+         <label>파일:</label>
+
+         <input type="file" name="file1">
+
+         <br><br>
+
+         <input type="submit" value="upload">
+
+</form>
 </body>
 </html>

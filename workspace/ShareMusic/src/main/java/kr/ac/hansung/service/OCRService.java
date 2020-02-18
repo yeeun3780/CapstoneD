@@ -1,5 +1,7 @@
 package kr.ac.hansung.service;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -10,37 +12,45 @@ import org.bytedeco.javacpp.lept;
 import org.bytedeco.javacpp.lept.PIX;
 import org.bytedeco.javacpp.tesseract.TessBaseAPI;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class OCRService {
-	public List<String> getTesseract(String fileURL) {
+	public List<String> getTesseract(MultipartFile file) {
 
 		TessBaseAPI instance = new TessBaseAPI();
 
+		byte[] imageBytes = null;
+		try {
+			imageBytes = file.getBytes();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+		ByteBuffer imgBB = ByteBuffer.wrap(imageBytes);
+//		BytePointer b = null;
+//		try {
+//			b = new BytePointer(file.getBytes());
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		PIX image = lept.pixReadMem(imgBB,imageBytes.length);
+		
 		instance.Init("/users/jeon-yongho/Desktop/tessdata", "eng+kor");
-		PIX image = lept.pixRead(fileURL);
-
+//		PIX image = lept.pixRead(b);
 		instance.SetImage(image);
-
+		
 		BytePointer bytePointer = instance.GetUTF8Text();
 
 		String output = bytePointer.getString();
+		
 		String[] outputArray = output.split("\n");
-
-		for (String st : outputArray) {
-
-			System.out.println(st);
-
-		}
 
 		System.out.println("-----------------------------------------------------------------");
 		// 빈 문자열 인덱스 제거 하여 문자열 배열정리
 
 		for (int i = 0; i < outputArray.length; i++) {
 			outputArray[i] = getHangul(outputArray[i]).trim();
-			if (!outputArray[i].equals("")) {
-				System.out.println("index" + i + " : " + outputArray[i]);
-			}
 		}
 		List<String> list = new ArrayList<String>(Arrays.asList(outputArray));
 
@@ -51,12 +61,7 @@ public class OCRService {
 				iter.remove();
 			}
 		}
-//		outputArray = list.toArray(new String[list.size()]);
 
-//		for (int i = 0; i < outputArray.length; i++) {
-//			System.out.println("index" + i + " : " + outputArray[i]);
-//		}
-		
 		return list;
 
 	}
