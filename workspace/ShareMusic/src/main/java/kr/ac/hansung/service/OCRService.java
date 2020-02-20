@@ -27,6 +27,14 @@ public class OCRService {
 			e.printStackTrace();
 		}		
 		ByteBuffer imgBB = ByteBuffer.wrap(imageBytes);
+		System.out.println(imgBB.toString());
+		
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 //		BytePointer b = null;
 //		try {
 //			b = new BytePointer(file.getBytes());
@@ -39,7 +47,7 @@ public class OCRService {
 		instance.Init("/users/jeon-yongho/Desktop/tessdata", "eng+kor");
 //		PIX image = lept.pixRead(b);
 		instance.SetImage(image);
-		
+		System.out.println(image.toString());
 		BytePointer bytePointer = instance.GetUTF8Text();
 
 		String output = bytePointer.getString();
